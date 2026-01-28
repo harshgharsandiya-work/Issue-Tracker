@@ -14,12 +14,14 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  name         String
-  email        String       @unique
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+
   repositories Repository[]
   issues       Issue[]
-  createdAt    DateTime     @default(now())
+  comments     Comment[]
 }
 
 model Repository {
@@ -28,8 +30,9 @@ model Repository {
   description String?
   ownerId     Int
   owner       User     @relation(fields: [ownerId], references: [id])
-  issues      Issue[]
   createdAt   DateTime @default(now())
+
+  issues Issue[]
 }
 
 enum IssueStatus {
@@ -45,6 +48,21 @@ model Issue {
 
   repositoryId Int
   repository   Repository @relation(fields: [repositoryId], references: [id])
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  comments Comment[]
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  content String
+
+  issueId Int
+  issue   Issue @relation(fields: [issueId], references: [id])
 
   authorId Int
   author   User @relation(fields: [authorId], references: [id])
