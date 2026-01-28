@@ -17,8 +17,9 @@ model User {
   id           Int          @id @default(autoincrement())
   name         String
   email        String       @unique
-  createdAt    DateTime     @default(now())
   repositories Repository[]
+  issues       Issue[]
+  createdAt    DateTime     @default(now())
 }
 
 model Repository {
@@ -27,5 +28,26 @@ model Repository {
   description String?
   ownerId     Int
   owner       User     @relation(fields: [ownerId], references: [id])
+  issues      Issue[]
   createdAt   DateTime @default(now())
+}
+
+enum IssueStatus {
+  OPEN
+  CLOSED
+}
+
+model Issue {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  status      IssueStatus @default(OPEN)
+
+  repositoryId Int
+  repository   Repository @relation(fields: [repositoryId], references: [id])
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
 }
