@@ -38,8 +38,11 @@ router.get("/", async (req, res) => {
 router.get("/user/:id", async (req, res) => {
     const repos = await prisma.repository.findMany({
         where: { ownerId: Number(req.params.id) },
+        include: {
+            author: true,
+            comments: true,
+        },
     });
-
     res.json(repos);
 });
 
